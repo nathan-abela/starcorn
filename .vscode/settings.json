@@ -1,0 +1,9 @@
+{
+  "cSpell.words": [
+	"posthog",
+	"shadcn",
+	"starcorn",
+	"vercel"
+],
+  "typescript.preferences.importModuleSpecifier": "non-relative"
+}

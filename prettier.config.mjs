@@ -1,0 +1,31 @@
+const prettierConfig = {
+  endOfLine: "lf",
+  semi: true,
+  singleQuote: false,
+  tabWidth: 2,
+  printWidth: 100,
+  useTabs: false,
+  proseWrap: "preserve",
+  quoteProps: "as-needed",
+  trailingComma: "es5",
+  importOrder: [
+    "^(react/(.*)$)|^(react$)",
+    "^(next/(.*)$)|^(next$)",
+    "<THIRD_PARTY_MODULES>",
+    "",
+    "^types$",
+    "^@/types/(.*)$",
+    "^@/config/(.*)$",
+    "^@/lib/(.*)$",
+    "^@/components/ui/(.*)$",
+    "^@/components/(.*)$",
+    "^@/styles/(.*)$",
+    "^@/app/(.*)$",
+    "",
+    "^[./]",
+  ],
+  importOrderParserPlugins: ["typescript", "jsx", "decorators-legacy"],
+  plugins: ["@ianvs/prettier-plugin-sort-imports", "prettier-plugin-tailwindcss"],
+};
+
+export default prettierConfig;
