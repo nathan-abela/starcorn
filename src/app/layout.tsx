@@ -15,8 +15,13 @@ export const metadata: Metadata = {
     "organize starred repos",
   ],
   icons: {
-    icon: "/favicon.svg",
+    icon: [
+      { url: "/assets/favicons/favicon.ico", sizes: "48x48" },
+      { url: "/assets/favicons/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+    ],
+    apple: "/assets/favicons/apple-touch-icon.png",
   },
+  manifest: "/assets/favicons/site.webmanifest",
   openGraph: {
     title: "starcorn - GitHub Stars Organizer",
     description:
