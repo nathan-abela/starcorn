@@ -23,10 +23,19 @@ export interface FetchProgress {
   estimatedTotal: number;
 }
 
+export interface RateLimitInfo {
+  remaining: number;
+  limit: number;
+  resetAt: Date;
+}
+
 export interface FetchResult {
   repos: GitHubRepo[];
   isPartial: boolean;
   error?: string;
+  requiresToken?: boolean;
+  estimatedTotal?: number;
+  rateLimit?: RateLimitInfo;
 }
 
 export type FetchStatus = "idle" | "fetching" | "success" | "error";

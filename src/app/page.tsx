@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import type { FetchProgress, FetchStatus, GitHubRepo } from "@/types";
+import type { FetchProgress, FetchStatus, GitHubRepo, RateLimitInfo } from "@/types";
 import { Download, Lock, Star, Zap } from "lucide-react";
 
 import { fetchStarredRepos } from "@/lib/github";
@@ -9,8 +9,10 @@ import { EmptyState } from "@/components/empty-state";
 import { ErrorState } from "@/components/error-state";
 import { GitHubIcon } from "@/components/icons";
 import { ProgressIndicator } from "@/components/progress-indicator";
+import { RateLimitIndicator } from "@/components/rate-limit-indicator";
 import { RepoList } from "@/components/repo-list";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { TokenInput } from "@/components/token-input";
 import { UsernameInput } from "@/components/username-input";
 
 export default function Home() {
@@ -20,38 +22,50 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [isPartial, setIsPartial] = useState(false);
   const [username, setUsername] = useState("");
+  const [token, setToken] = useState<string | null>(null);
+  const [requiresToken, setRequiresToken] = useState(false);
+  const [rateLimit, setRateLimit] = useState<RateLimitInfo | undefined>();
 
-  const handleFetch = useCallback(async (inputUsername: string) => {
-    setUsername(inputUsername);
-    setStatus("fetching");
-    setRepos([]);
-    setError(null);
-    setIsPartial(false);
-    setProgress({
-      currentPage: 0,
-      totalPages: 1,
-      fetchedCount: 0,
-      estimatedTotal: 0,
-    });
+  const handleFetch = useCallback(
+    async (inputUsername: string) => {
+      setUsername(inputUsername);
+      setStatus("fetching");
+      setRepos([]);
+      setError(null);
+      setIsPartial(false);
+      setRequiresToken(false);
+      setProgress({
+        currentPage: 0,
+        totalPages: 1,
+        fetchedCount: 0,
+        estimatedTotal: 0,
+      });
 
-    const result = await fetchStarredRepos(inputUsername, null, (p) => {
-      setProgress(p);
-    });
+      const result = await fetchStarredRepos(inputUsername, token, (p) => {
+        setProgress(p);
+      });
 
-    const sortedRepos = [...result.repos].sort((a, b) => b.stargazers_count - a.stargazers_count);
-    setRepos(sortedRepos);
-    setIsPartial(result.isPartial);
+      const sortedRepos = [...result.repos].sort((a, b) => b.stargazers_count - a.stargazers_count);
+      setRepos(sortedRepos);
+      setIsPartial(result.isPartial);
+      setRateLimit(result.rateLimit);
 
-    if (result.error && result.repos.length === 0) {
-      setError(result.error);
-      setStatus("error");
-    } else if (result.error) {
-      setError(result.error);
-      setStatus("success");
-    } else {
-      setStatus("success");
-    }
-  }, []);
+      if (result.requiresToken) {
+        setRequiresToken(true);
+      }
+
+      if (result.error && result.repos.length === 0) {
+        setError(result.error);
+        setStatus("error");
+      } else if (result.error) {
+        setError(result.error);
+        setStatus("success");
+      } else {
+        setStatus("success");
+      }
+    },
+    [token]
+  );
 
   const handleRetry = () => {
     if (username) {
@@ -98,8 +112,17 @@ export default function Home() {
           </p>
         </header>
 
-        <div className="mx-auto w-full max-w-xl">
+        <div className="mx-auto w-full max-w-xl space-y-4">
           <UsernameInput onSubmit={handleFetch} isLoading={status === "fetching"} />
+
+          <div className="flex items-start justify-between gap-4">
+            <TokenInput
+              onTokenChange={setToken}
+              disabled={status === "fetching"}
+              required={requiresToken}
+            />
+            {rateLimit && <RateLimitIndicator rateLimit={rateLimit} />}
+          </div>
         </div>
 
         {status === "idle" && (

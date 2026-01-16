@@ -3,8 +3,6 @@
 import type { GitHubRepo } from "@/types";
 import { AlertTriangle } from "lucide-react";
 
-import { Alert, AlertDescription } from "@/components/ui/alert";
-
 import { RepoCard } from "./repo-card";
 
 interface RepoListProps {
@@ -17,10 +15,10 @@ export function RepoList({ repos, isPartial, partialMessage }: RepoListProps) {
   return (
     <div className="w-full">
       {isPartial && partialMessage && (
-        <Alert className="mb-4 border-yellow-500/50 bg-yellow-500/10">
-          <AlertTriangle className="h-4 w-4 text-yellow-500" />
-          <AlertDescription className="text-yellow-200">{partialMessage}</AlertDescription>
-        </Alert>
+        <div className="mb-4 flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200/90">
+          <AlertTriangle className="h-4 w-4 shrink-0 text-amber-500" />
+          <span>{partialMessage}</span>
+        </div>
       )}
       <div className="text-muted-foreground mb-4 text-sm">
         {repos.length} {repos.length === 1 ? "repository" : "repositories"}

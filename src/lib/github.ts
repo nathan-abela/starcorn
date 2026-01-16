@@ -1,7 +1,22 @@
-import type { FetchProgress, FetchResult, GitHubRepo } from "@/types";
+import type { FetchProgress, FetchResult, GitHubRepo, RateLimitInfo } from "@/types";
 
 const GITHUB_API_BASE = "https://api.github.com";
 const PER_PAGE = 30;
+
+function parseRateLimitHeaders(headers: Headers): RateLimitInfo | undefined {
+  const remaining = headers.get("X-RateLimit-Remaining");
+  const limit = headers.get("X-RateLimit-Limit");
+  const reset = headers.get("X-RateLimit-Reset");
+
+  if (remaining && limit && reset) {
+    return {
+      remaining: parseInt(remaining, 10),
+      limit: parseInt(limit, 10),
+      resetAt: new Date(parseInt(reset, 10) * 1000),
+    };
+  }
+  return undefined;
+}
 
 function parseLinkHeader(linkHeader: string | null): { lastPage: number } {
   if (!linkHeader) return { lastPage: 1 };
@@ -46,6 +61,7 @@ export async function fetchStarredRepos(
   let currentPage = 1;
   let totalPages = 1;
   let estimatedTotal = 0;
+  let rateLimit: RateLimitInfo | undefined;
 
   const headers: HeadersInit = {
     Accept: "application/vnd.github.v3+json",
@@ -61,33 +77,39 @@ export async function fetchStarredRepos(
       { headers, signal }
     );
 
+    rateLimit = parseRateLimitHeaders(firstResponse.headers);
+
     if (!firstResponse.ok) {
       if (firstResponse.status === 404) {
         return {
           repos: [],
           isPartial: false,
           error: "Oops! We couldn't find that user. Double-check the username?",
+          rateLimit,
         };
       }
       if (firstResponse.status === 403) {
-        const remaining = firstResponse.headers.get("X-RateLimit-Remaining");
-        if (remaining === "0") {
+        if (rateLimit?.remaining === 0) {
           return {
             repos: [],
             isPartial: false,
             error: "Rate limit exceeded. Add a GitHub token to continue, or wait a bit.",
+            requiresToken: true,
+            rateLimit,
           };
         }
         return {
           repos: [],
           isPartial: false,
           error: "Access denied. The user's stars may be private.",
+          rateLimit,
         };
       }
       return {
         repos: [],
         isPartial: false,
         error: `GitHub API error: ${firstResponse.status}`,
+        rateLimit,
       };
     }
 
@@ -112,6 +134,9 @@ export async function fetchStarredRepos(
         repos,
         isPartial: true,
         error: `This user has ~${estimatedTotal} stars. Add a token to fetch them all.`,
+        requiresToken: true,
+        estimatedTotal,
+        rateLimit,
       };
     }
 
@@ -121,6 +146,7 @@ export async function fetchStarredRepos(
           repos,
           isPartial: true,
           error: "Fetch cancelled",
+          rateLimit,
         };
       }
 
@@ -129,18 +155,24 @@ export async function fetchStarredRepos(
         { headers, signal }
       );
 
+      rateLimit = parseRateLimitHeaders(response.headers);
+
       if (!response.ok) {
         if (response.status === 403) {
           return {
             repos,
             isPartial: true,
             error: `Rate limit hit after ${repos.length} stars. Add a token to continue.`,
+            requiresToken: true,
+            estimatedTotal,
+            rateLimit,
           };
         }
         return {
           repos,
           isPartial: true,
           error: `Error on page ${currentPage}. Showing ${repos.length} stars fetched so far.`,
+          rateLimit,
         };
       }
 
@@ -159,6 +191,7 @@ export async function fetchStarredRepos(
     return {
       repos,
       isPartial: false,
+      rateLimit,
     };
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") {
@@ -166,6 +199,7 @@ export async function fetchStarredRepos(
         repos,
         isPartial: true,
         error: "Fetch cancelled",
+        rateLimit,
       };
     }
 
@@ -176,6 +210,7 @@ export async function fetchStarredRepos(
         repos.length > 0
           ? `Connection lost. Showing ${repos.length} stars fetched so far.`
           : "Connection lost. Check your internet and try again.",
+      rateLimit,
     };
   }
 }
