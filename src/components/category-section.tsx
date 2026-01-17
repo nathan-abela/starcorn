@@ -27,7 +27,14 @@ export const CategorySection = forwardRef<HTMLDivElement, CategorySectionProps>(
     return (
       <div ref={ref}>
         <div className="mb-4 flex items-baseline justify-between">
-          <h2 className="text-lg font-semibold">{category.name}</h2>
+          <div>
+            <h2 className="text-lg font-semibold">{category.name}</h2>
+            {category.name === "Uncategorized" && (
+              <p className="text-muted-foreground text-sm">
+                Repositories that don&apos;t fit clearly into other categories
+              </p>
+            )}
+          </div>
           <span className="text-muted-foreground text-sm">
             {category.repos.length} {category.repos.length === 1 ? "repository" : "repositories"}
           </span>
