@@ -1,16 +1,25 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import type { FetchProgress, FetchStatus, GitHubRepo, RateLimitInfo } from "@/types";
 import { Download, Lock, Star, Zap } from "lucide-react";
 
+import {
+  categorizeRepos,
+  filterRepos,
+  sortRepos,
+  type Category,
+  type SortOption,
+} from "@/lib/categories";
 import { fetchStarredRepos } from "@/lib/github";
+import { CategoryGrid } from "@/components/category-grid";
+import { CategorySection } from "@/components/category-section";
 import { EmptyState } from "@/components/empty-state";
 import { ErrorState } from "@/components/error-state";
+import { FilterControls } from "@/components/filter-controls";
 import { GitHubIcon } from "@/components/icons";
 import { ProgressIndicator } from "@/components/progress-indicator";
 import { RateLimitIndicator } from "@/components/rate-limit-indicator";
-import { RepoList } from "@/components/repo-list";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { TokenInput } from "@/components/token-input";
 import { UsernameInput } from "@/components/username-input";
@@ -25,6 +34,41 @@ export default function Home() {
   const [token, setToken] = useState<string | null>(null);
   const [requiresToken, setRequiresToken] = useState(false);
   const [rateLimit, setRateLimit] = useState<RateLimitInfo | undefined>();
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOption, setSortOption] = useState<SortOption>("stars-desc");
+  const categorySectionRef = useRef<HTMLDivElement>(null);
+
+  const categories = useMemo(() => categorizeRepos(repos), [repos]);
+
+  const filteredCategories = useMemo((): Category[] => {
+    return categories.map((cat) => ({
+      ...cat,
+      repos: sortRepos(filterRepos(cat.repos, searchQuery), sortOption),
+    }));
+  }, [categories, searchQuery, sortOption]);
+
+  const allReposFiltered = useMemo(() => {
+    return sortRepos(filterRepos(repos, searchQuery), sortOption);
+  }, [repos, searchQuery, sortOption]);
+
+  const selectedCategoryData = useMemo(() => {
+    if (selectedCategory === null) {
+      return { name: "All", repos: allReposFiltered };
+    }
+    return filteredCategories.find((cat) => cat.name === selectedCategory) || null;
+  }, [filteredCategories, selectedCategory, allReposFiltered]);
+
+  const handleCategorySelect = useCallback((categoryName: string) => {
+    if (categoryName === "__all__") {
+      setSelectedCategory(null);
+    } else {
+      setSelectedCategory((prev) => (prev === categoryName ? null : categoryName));
+    }
+    setTimeout(() => {
+      categorySectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+  }, []);
 
   const handleFetch = useCallback(
     async (inputUsername: string) => {
@@ -34,6 +78,8 @@ export default function Home() {
       setError(null);
       setIsPartial(false);
       setRequiresToken(false);
+      setSelectedCategory(null);
+      setSearchQuery("");
       setProgress({
         currentPage: 0,
         totalPages: 1,
@@ -45,8 +91,7 @@ export default function Home() {
         setProgress(p);
       });
 
-      const sortedRepos = [...result.repos].sort((a, b) => b.stargazers_count - a.stargazers_count);
-      setRepos(sortedRepos);
+      setRepos(result.repos);
       setIsPartial(result.isPartial);
       setRateLimit(result.rateLimit);
 
@@ -153,7 +198,36 @@ export default function Home() {
           {status === "success" && repos.length === 0 && <EmptyState username={username} />}
 
           {status === "success" && repos.length > 0 && (
-            <RepoList repos={repos} isPartial={isPartial} partialMessage={error || undefined} />
+            <div className="w-full space-y-8">
+              {isPartial && error && (
+                <div className="flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200/90">
+                  <span>{error}</span>
+                </div>
+              )}
+
+              <div className="text-muted-foreground text-sm">
+                {repos.length} {repos.length === 1 ? "repository" : "repositories"} across{" "}
+                {categories.filter((c) => c.repos.length > 0).length} categories
+              </div>
+
+              <FilterControls
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                sortOption={sortOption}
+                onSortChange={setSortOption}
+              />
+
+              <CategoryGrid
+                categories={filteredCategories}
+                selectedCategory={selectedCategory}
+                onCategorySelect={handleCategorySelect}
+                totalRepos={allReposFiltered.length}
+              />
+
+              {selectedCategoryData && (
+                <CategorySection ref={categorySectionRef} category={selectedCategoryData} />
+              )}
+            </div>
           )}
         </div>
 
