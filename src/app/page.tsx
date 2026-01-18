@@ -12,10 +12,12 @@ import {
   type SortOption,
 } from "@/lib/categories";
 import { fetchStarredRepos } from "@/lib/github";
+import { Button } from "@/components/ui/button";
 import { CategoryGrid } from "@/components/category-grid";
 import { CategorySection } from "@/components/category-section";
 import { EmptyState } from "@/components/empty-state";
 import { ErrorState } from "@/components/error-state";
+import { ExportModal } from "@/components/export-modal";
 import { FilterControls } from "@/components/filter-controls";
 import { GitHubIcon } from "@/components/icons";
 import { ProgressIndicator } from "@/components/progress-indicator";
@@ -37,6 +39,7 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState<SortOption>("stars-desc");
+  const [exportModalOpen, setExportModalOpen] = useState(false);
   const categorySectionRef = useRef<HTMLDivElement>(null);
 
   const categories = useMemo(() => categorizeRepos(repos), [repos]);
@@ -198,24 +201,37 @@ export default function Home() {
           {status === "success" && repos.length === 0 && <EmptyState username={username} />}
 
           {status === "success" && repos.length > 0 && (
-            <div className="w-full space-y-8">
+            <div className="w-full space-y-6">
               {isPartial && error && (
                 <div className="flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200/90">
                   <span>{error}</span>
                 </div>
               )}
 
-              <div className="text-muted-foreground text-sm">
-                {repos.length} {repos.length === 1 ? "repository" : "repositories"} across{" "}
-                {categories.filter((c) => c.repos.length > 0).length} categories
-              </div>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="text-muted-foreground text-sm">
+                    {repos.length} {repos.length === 1 ? "repository" : "repositories"} across{" "}
+                    {categories.filter((c) => c.repos.length > 0).length} categories
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setExportModalOpen(true)}
+                    className="cursor-pointer"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Export
+                  </Button>
+                </div>
 
-              <FilterControls
-                searchQuery={searchQuery}
-                onSearchChange={setSearchQuery}
-                sortOption={sortOption}
-                onSortChange={setSortOption}
-              />
+                <FilterControls
+                  searchQuery={searchQuery}
+                  onSearchChange={setSearchQuery}
+                  sortOption={sortOption}
+                  onSortChange={setSortOption}
+                />
+              </div>
 
               <CategoryGrid
                 categories={filteredCategories}
@@ -227,6 +243,14 @@ export default function Home() {
               {selectedCategoryData && (
                 <CategorySection ref={categorySectionRef} category={selectedCategoryData} />
               )}
+
+              <ExportModal
+                open={exportModalOpen}
+                onOpenChange={setExportModalOpen}
+                username={username}
+                categories={categories}
+                totalRepos={repos.length}
+              />
             </div>
           )}
         </div>
