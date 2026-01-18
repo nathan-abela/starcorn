@@ -11,7 +11,12 @@ export function EmptyState({ username }: EmptyStateProps) {
   return (
     <Card className="w-full max-w-md">
       <CardContent className="flex flex-col items-center gap-4 pt-6 text-center">
-        <div className="text-6xl">🐿️</div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/assets/mascot/squirrel-sad.png"
+          alt="Sad squirrel with empty chest"
+          className="h-32 w-auto"
+        />
         <div>
           <h3 className="text-lg font-medium">No stars yet!</h3>
           <p className="text-muted-foreground mt-1">
