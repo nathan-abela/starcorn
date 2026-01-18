@@ -7,12 +7,18 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "starcorn - GitHub Stars Organizer",
   description:
-    "Organize and export your GitHub starred repositories. No authentication required, fully private, works instantly.",
+    "Organize and export your GitHub starred repositories. No authentication required, fully private, instant results. Export to Markdown, JSON, or CSV.",
   keywords: [
     "github stars",
     "github stars organizer",
     "export github stars",
     "organize starred repos",
+    "github starred repositories",
+    "github stars export",
+    "github stars markdown",
+    "github stars csv",
+    "github stars json",
+    "starred repos organizer",
   ],
   icons: {
     icon: [
@@ -25,8 +31,18 @@ export const metadata: Metadata = {
   openGraph: {
     title: "starcorn - GitHub Stars Organizer",
     description:
-      "Organize and export your GitHub starred repositories. No authentication required.",
+      "Organize and export your GitHub starred repositories. No authentication required, fully private, instant results.",
     type: "website",
+    siteName: "starcorn",
+  },
+  twitter: {
+    card: "summary",
+    title: "starcorn - GitHub Stars Organizer",
+    description: "Organize and export your GitHub starred repositories. No auth required.",
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
