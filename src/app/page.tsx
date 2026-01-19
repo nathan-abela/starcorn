@@ -163,7 +163,7 @@ export default function Home() {
         <div className="mx-auto w-full max-w-xl space-y-4">
           <UsernameInput onSubmit={handleFetch} isLoading={status === "fetching"} />
 
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
             <TokenInput
               onTokenChange={setToken}
               disabled={status === "fetching"}
@@ -265,6 +265,10 @@ export default function Home() {
               className="text-foreground/70 underline-offset-4 hover:underline"
             >
               GitHub API
+            </a>
+            {" · "}
+            <a href="/how-it-works" className="text-primary underline-offset-4 hover:underline">
+              How it works
             </a>
           </p>
         </footer>
