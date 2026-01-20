@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { basePath } from "@/lib/config";
 import { ThemeProvider } from "@/components/theme-provider";
 
 import "./globals.css";
@@ -22,12 +23,12 @@ export const metadata: Metadata = {
   ],
   icons: {
     icon: [
-      { url: "/assets/favicons/favicon.ico", sizes: "48x48" },
-      { url: "/assets/favicons/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: `${basePath}/assets/favicons/favicon.ico`, sizes: "48x48" },
+      { url: `${basePath}/assets/favicons/favicon-96x96.png`, sizes: "96x96", type: "image/png" },
     ],
-    apple: "/assets/favicons/apple-touch-icon.png",
+    apple: `${basePath}/assets/favicons/apple-touch-icon.png`,
   },
-  manifest: "/assets/favicons/site.webmanifest",
+  manifest: `${basePath}/assets/favicons/site.webmanifest`,
   openGraph: {
     title: "starcorn - GitHub Stars Organizer",
     description:
