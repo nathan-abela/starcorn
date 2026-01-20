@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import type { FetchProgress, FetchStatus, GitHubRepo, RateLimitInfo } from "@/types";
 import { Download, Lock, Star, Zap } from "lucide-react";
 
@@ -267,9 +268,9 @@ export default function Home() {
               GitHub API
             </a>
             {" · "}
-            <a href="/how-it-works" className="text-primary underline-offset-4 hover:underline">
+            <Link href="/how-it-works" className="text-primary underline-offset-4 hover:underline">
               How it works
-            </a>
+            </Link>
           </p>
         </footer>
       </main>
