@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { getAssetPath } from "@/lib/config";
 import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
@@ -13,7 +14,7 @@ export default function NotFound() {
         <div className="flex flex-col items-center gap-6 text-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/assets/mascot/squirrel-dizzy.png"
+            src={getAssetPath("/assets/mascot/squirrel-dizzy.png")}
             alt="Dizzy squirrel with stars"
             className="h-48 w-auto"
           />

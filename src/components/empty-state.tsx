@@ -1,5 +1,6 @@
 "use client";
 
+import { getAssetPath } from "@/lib/config";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -13,7 +14,7 @@ export function EmptyState({ username }: EmptyStateProps) {
       <CardContent className="flex flex-col items-center gap-4 pt-6 text-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/assets/mascot/squirrel-sad.png"
+          src={getAssetPath("/assets/mascot/squirrel-sad.png")}
           alt="Sad squirrel with empty chest"
           className="h-32 w-auto"
         />
