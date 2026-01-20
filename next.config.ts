@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const isProd = process.env.NODE_ENV === "production";
-const useGitHubPages = false;
+const useGitHubPages = true;
 const repoName = "starcorn";
 
 const nextConfig: NextConfig = {
