@@ -1,11 +1,12 @@
 {
   "cSpell.words": [
-	"favicon",
-	"favicon",
-	"posthog",
-	"shadcn",
-	"starcorn",
-	"vercel"
-],
+    "favicon",
+    "favicon",
+    "posthog",
+    "shadcn",
+    "starcorn",
+    "uncategorized",
+    "vercel"
+  ],
   "typescript.preferences.importModuleSpecifier": "non-relative"
 }
