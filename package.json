@@ -22,7 +22,7 @@
   "bugs": {
     "url": "https://github.com/nathan-abela/starcorn/issues"
   },
-  "homepage": "https://github.com/nathan-abela/starcorn#readme",
+  "homepage": "https://nathan-abela.github.io/starcorn",
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-dialog": "1.1.15",
@@ -36,6 +36,7 @@
     "lucide-react": "0.562.0",
     "next": "^16.1.1",
     "next-themes": "0.4.6",
+    "posthog-js": "1.333.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "tailwind-merge": "^3.4.0"

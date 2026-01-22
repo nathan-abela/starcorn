@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { Check, Copy, Download } from "lucide-react";
 
+import { trackExportClicked } from "@/lib/analytics";
 import type { Category } from "@/lib/categories";
 import { downloadFile, getExportContent, getFileExtension, type ExportFormat } from "@/lib/export";
 import { Button } from "@/components/ui/button";
@@ -43,12 +44,16 @@ export function ExportModal({
     await navigator.clipboard.writeText(content);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  }, [content]);
+    const formatKey = format === "markdown" ? "md" : format;
+    trackExportClicked(formatKey as "md" | "json" | "csv");
+  }, [content, format]);
 
   const handleDownload = useCallback(() => {
     const extension = getFileExtension(format);
     const filename = `${username}-stars.${extension}`;
     downloadFile(content, filename);
+    const formatKey = format === "markdown" ? "md" : format;
+    trackExportClicked(formatKey as "md" | "json" | "csv");
   }, [content, format, username]);
 
   return (

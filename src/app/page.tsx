@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { FetchProgress, FetchStatus, GitHubRepo, RateLimitInfo } from "@/types";
 import { Download, Lock, Star, Zap } from "lucide-react";
 
+import { trackStarsFetched } from "@/lib/analytics";
 import {
   categorizeRepos,
   filterRepos,
@@ -109,8 +110,10 @@ export default function Home() {
       } else if (result.error) {
         setError(result.error);
         setStatus("success");
+        trackStarsFetched(result.repos.length);
       } else {
         setStatus("success");
+        trackStarsFetched(result.repos.length);
       }
     },
     [token]
