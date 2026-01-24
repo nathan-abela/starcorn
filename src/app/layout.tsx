@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 
-import { basePath } from "@/lib/config";
+import { basePath, siteUrl } from "@/lib/config";
 import { PostHogProvider } from "@/components/posthog-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://nathan-abela.github.io/starcorn"),
+  metadataBase: new URL(siteUrl),
   title: "starcorn - GitHub Stars Organizer",
   description:
     "Organize and export your GitHub starred repositories. No authentication required, fully private, instant results. Export to Markdown, JSON, or CSV.",
