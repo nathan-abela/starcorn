@@ -21,7 +21,7 @@ import { EmptyState } from "@/components/empty-state";
 import { ErrorState } from "@/components/error-state";
 import { ExportModal } from "@/components/export-modal";
 import { FilterControls } from "@/components/filter-controls";
-import { GitHubIcon } from "@/components/icons";
+import { GitHubStars } from "@/components/github-stars";
 import { ProgressIndicator } from "@/components/progress-indicator";
 import { RateLimitIndicator } from "@/components/rate-limit-indicator";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -133,15 +133,7 @@ export default function Home() {
 
       <main className="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-4">
         <nav className="mb-8 flex items-center justify-between">
-          <a
-            href="https://github.com/nathan-abela/starcorn"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="border-border/50 bg-background/50 text-muted-foreground hover:border-primary/50 hover:text-primary inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border transition-colors"
-          >
-            <GitHubIcon className="h-4 w-4" />
-            <span className="sr-only">View source on GitHub</span>
-          </a>
+          <GitHubStars />
           <ThemeToggle />
         </nav>
 
