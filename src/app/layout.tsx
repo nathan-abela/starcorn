@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://nathan-abela.github.io/starcorn"),
   title: "starcorn - GitHub Stars Organizer",
   description:
     "Organize and export your GitHub starred repositories. No authentication required, fully private, instant results. Export to Markdown, JSON, or CSV.",
@@ -36,11 +37,20 @@ export const metadata: Metadata = {
       "Organize and export your GitHub starred repositories. No authentication required, fully private, instant results.",
     type: "website",
     siteName: "starcorn",
+    images: [
+      {
+        url: "/assets/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "starcorn - Export your GitHub Stars",
+      },
+    ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "starcorn - GitHub Stars Organizer",
     description: "Organize and export your GitHub starred repositories. No auth required.",
+    images: ["/assets/og-image.png"],
   },
   robots: {
     index: true,
