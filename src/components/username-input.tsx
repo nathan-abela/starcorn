@@ -47,7 +47,7 @@ export function UsernameInput({ onSubmit, isLoading }: UsernameInputProps) {
               type="text"
               value={username}
               onChange={handleChange}
-              placeholder="Enter GitHub username"
+              placeholder="GitHub username"
               disabled={isLoading}
               className="h-12 pl-10 text-base"
               aria-invalid={!!error}
