@@ -23,6 +23,9 @@ export const metadata: Metadata = {
     "github stars json",
     "starred repos organizer",
   ],
+  alternates: {
+    canonical: "/",
+  },
   icons: {
     icon: [
       { url: `${basePath}/assets/favicons/favicon.ico`, sizes: "48x48" },
