@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://nathan-abela.github.io/starcorn/sitemap.xml
