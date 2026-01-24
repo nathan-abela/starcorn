@@ -126,7 +126,7 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen overflow-x-hidden">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="bg-primary/5 absolute -top-40 left-1/2 h-[500px] w-[800px] -translate-x-1/2 rounded-full blur-3xl" />
       </div>

@@ -44,7 +44,7 @@ export function RepoCard({ repo }: RepoCardProps) {
   const languageColor = repo.language ? languageColors[repo.language] || "#6e7681" : null;
 
   return (
-    <Card className="hover:border-muted-foreground/50 py-4 transition-all">
+    <Card className="hover:border-muted-foreground/50 overflow-hidden py-4 transition-all">
       <CardContent className="px-4">
         <button onClick={() => setIsExpanded(!isExpanded)} className="w-full text-left">
           <div className="flex items-start gap-3">
