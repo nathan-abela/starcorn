@@ -99,10 +99,7 @@ export function RepoCard({ repo }: RepoCardProps) {
 
         {isExpanded && (
           <div className="mt-4 border-t pt-4">
-            {repo.description && (
-              <p className="text-muted-foreground text-sm">{repo.description}</p>
-            )}
-            <div className="text-muted-foreground mt-3 flex items-center gap-4 text-xs">
+            <div className="text-muted-foreground flex items-center gap-4 text-xs">
               <span>Updated {new Date(repo.updated_at).toLocaleDateString()}</span>
               {repo.fork && (
                 <Badge variant="outline" className="text-xs">
