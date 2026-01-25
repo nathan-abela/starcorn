@@ -157,7 +157,11 @@ export default function Home() {
         </header>
 
         <div className="mx-auto w-full max-w-xl space-y-4">
-          <UsernameInput onSubmit={handleFetch} isLoading={status === "fetching"} />
+          <UsernameInput
+            onSubmit={handleFetch}
+            isLoading={status === "fetching"}
+            fetchedUsername={status === "success" ? username : undefined}
+          />
 
           <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
             <TokenInput

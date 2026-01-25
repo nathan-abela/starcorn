@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AlertCircle, Loader2, Star } from "lucide-react";
+import { AlertCircle, ExternalLink, Loader2, Star } from "lucide-react";
 
 import { validateUsername } from "@/lib/github";
 import { Button } from "@/components/ui/button";
@@ -11,9 +11,10 @@ import { GitHubIcon } from "@/components/icons";
 interface UsernameInputProps {
   onSubmit: (username: string) => void;
   isLoading: boolean;
+  fetchedUsername?: string;
 }
 
-export function UsernameInput({ onSubmit, isLoading }: UsernameInputProps) {
+export function UsernameInput({ onSubmit, isLoading, fetchedUsername }: UsernameInputProps) {
   const [username, setUsername] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -49,9 +50,20 @@ export function UsernameInput({ onSubmit, isLoading }: UsernameInputProps) {
               onChange={handleChange}
               placeholder="GitHub username"
               disabled={isLoading}
-              className="h-12 pl-10 text-base"
+              className={`h-12 pl-10 text-base ${fetchedUsername ? "pr-10" : ""}`}
               aria-invalid={!!error}
             />
+            {fetchedUsername && (
+              <a
+                href={`https://github.com/${fetchedUsername}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary absolute top-1/2 right-3 -translate-y-1/2 transition-colors"
+                title={`View ${fetchedUsername}'s profile`}
+              >
+                <ExternalLink className="h-4 w-4" />
+              </a>
+            )}
           </div>
           <Button type="submit" disabled={isLoading || !username.trim()} className="h-12 px-6">
             {isLoading ? (
