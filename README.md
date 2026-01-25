@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
+    <a href="https://starcorn.dev">
+        <img src="public/assets/mascot/squirrel-holding-star.png" width="100" alt="starcorn Logo"/>
+    </a>
+
+# starcorn
+
+Organize, filter, and export GitHub stars. Fully client-side.
+
+[![Next.js](https://img.shields.io/badge/Next.js-black?style=flat&logo=next.js)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-blue?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-38B2AC?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![shadcn/ui](https://img.shields.io/badge/shadcn/ui-black?style=flat&logo=shadcnui)](https://ui.shadcn.com)
+
+![Last Commit](https://img.shields.io/github/last-commit/nathan-abela/starcorn)
+![GitHub Stars](https://img.shields.io/github/stars/nathan-abela/starcorn)
+![Views](https://gitviews.com/repo/nathan-abela/starcorn.svg?style=flat)
+
+</div>
+
+## Live Demo
+
+Check out the live site at **[starcorn.dev](https://starcorn.dev)**
+
+<p align="center">
+    <img src="public/assets/landing-page.png" width="800" alt="Starcorn Landing Page"/>
+</p>
+
+## Features
+
+- **Auto-categorization** - Stars sorted into 20 categories (AI, DevTools, UI Components, etc.)
+- **Search & filter** - Find repos across all categories
+- **Export** - Download as Markdown, JSON, or CSV
+- **Privacy-first** - No OAuth, no data stored, runs entirely in your browser
+
+## How It Works
+
+1. Enter any GitHub username
+2. View stars organized by category
+3. Export your organized list
+
+For more details, visit [How It Works](https://starcorn.dev/how-it-works).
 
 ## Getting Started
 
-First, run the development server:
+### Running the Application
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+To get started locally, follow these steps:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. **Clone the repository:**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+   ```bash
+   git clone https://github.com/nathan-abela/starcorn.git
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. **Install Dependencies:**
 
-## Learn More
+   ```bash
+   npm install
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+3. **Start the development server:**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```bash
+   npm run dev
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. **Open your browser:**
 
-## Deploy on Vercel
+   Navigate to [http://localhost:3000](http://localhost:3000) to see the application.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Technologies Used
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Next.js](https://nextjs.org)
+- [TypeScript](https://www.typescriptlang.org)
+- [Tailwind CSS](https://tailwindcss.com)
+- [shadcn/ui](https://ui.shadcn.com)
+
+---
+
+<p align="center">
+    <img src="public/assets/favicons/favicon-96x96.png" width="50" alt="Starcorn Icon"/>
+</p>
