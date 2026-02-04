@@ -36,6 +36,7 @@ export interface FetchResult {
   requiresToken?: boolean;
   estimatedTotal?: number;
   rateLimit?: RateLimitInfo;
+  isOrganization?: boolean;
 }
 
 export type FetchStatus = "idle" | "fetching" | "success" | "error";

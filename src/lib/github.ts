@@ -51,6 +51,17 @@ export function validateUsername(username: string): string | null {
   return null;
 }
 
+async function checkIfOrganization(username: string, headers: HeadersInit): Promise<boolean> {
+  try {
+    const response = await fetch(`${GITHUB_API_BASE}/users/${username}`, { headers });
+    if (!response.ok) return false;
+    const data = await response.json();
+    return data.type === "Organization";
+  } catch {
+    return false;
+  }
+}
+
 export async function fetchStarredRepos(
   username: string,
   token: string | null,
@@ -186,6 +197,18 @@ export async function fetchStarredRepos(
         fetchedCount: repos.length,
         estimatedTotal,
       });
+    }
+
+    if (repos.length === 0) {
+      const isOrg = await checkIfOrganization(username, headers);
+      if (isOrg) {
+        return {
+          repos: [],
+          isPartial: false,
+          isOrganization: true,
+          rateLimit,
+        };
+      }
     }
 
     return {

@@ -37,6 +37,7 @@ export default function Home() {
   const [username, setUsername] = useState("");
   const [token, setToken] = useState<string | null>(null);
   const [requiresToken, setRequiresToken] = useState(false);
+  const [isOrganization, setIsOrganization] = useState(false);
   const [rateLimit, setRateLimit] = useState<RateLimitInfo | undefined>();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -83,6 +84,7 @@ export default function Home() {
       setError(null);
       setIsPartial(false);
       setRequiresToken(false);
+      setIsOrganization(false);
       setSelectedCategory(null);
       setSearchQuery("");
       setProgress({
@@ -102,6 +104,9 @@ export default function Home() {
 
       if (result.requiresToken) {
         setRequiresToken(true);
+      }
+      if (result.isOrganization) {
+        setIsOrganization(true);
       }
 
       if (result.error && result.repos.length === 0) {
@@ -198,7 +203,9 @@ export default function Home() {
 
           {status === "error" && error && <ErrorState message={error} onRetry={handleRetry} />}
 
-          {status === "success" && repos.length === 0 && <EmptyState username={username} />}
+          {status === "success" && repos.length === 0 && (
+            <EmptyState username={username} isOrganization={isOrganization} />
+          )}
 
           {status === "success" && repos.length > 0 && (
             <div className="w-full space-y-6">
