@@ -7,7 +7,13 @@ import { trackExportClicked } from "@/lib/analytics";
 import type { Category } from "@/lib/categories";
 import { downloadFile, getExportContent, getFileExtension, type ExportFormat } from "@/lib/export";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface ExportModalProps {
@@ -61,6 +67,9 @@ export function ExportModal({
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Export Stars</DialogTitle>
+          <DialogDescription>
+            Download or copy your organized stars in your preferred format.
+          </DialogDescription>
         </DialogHeader>
 
         <Tabs value={format} onValueChange={(v) => setFormat(v as ExportFormat)}>
