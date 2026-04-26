@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
 
 import type { SortOption } from "@/lib/categories";
@@ -29,6 +29,11 @@ export function FilterControls({
   onSortChange,
 }: FilterControlsProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isMac, setIsMac] = useState(false);
+
+  useEffect(() => {
+    setIsMac(navigator.platform.toUpperCase().includes("MAC"));
+  }, []);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -53,18 +58,27 @@ export function FilterControls({
         <Input
           ref={inputRef}
           type="text"
-          placeholder="Search repositories... (⌘K)"
+          placeholder="Search repositories..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pr-9 pl-9"
+          className="pr-16 pl-9"
         />
-        {searchQuery && (
+        {searchQuery ? (
           <button
             onClick={() => onSearchChange("")}
             className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
           >
             <X className="h-4 w-4" />
           </button>
+        ) : (
+          <div className="pointer-events-none absolute top-1/2 right-2 flex -translate-y-1/2 gap-1 select-none">
+            <kbd className="border-border bg-muted text-muted-foreground rounded border px-1.5 py-0.5 text-[10px]">
+              {isMac ? "⌘" : "Ctrl"}
+            </kbd>
+            <kbd className="border-border bg-muted text-muted-foreground rounded border px-1.5 py-0.5 text-[10px]">
+              K
+            </kbd>
+          </div>
         )}
       </div>
 
