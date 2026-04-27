@@ -1,6 +1,7 @@
 "use client";
 
 import type { Category } from "@/lib/categories";
+import { DroppableCategoryTile } from "@/components/droppable-category-tile";
 
 interface CategoryGridProps {
   categories: Category[];
@@ -32,31 +33,14 @@ export function CategoryGrid({
           {totalRepos} {totalRepos === 1 ? "repo" : "repos"}
         </div>
       </button>
-      {categories.map((category) => {
-        const isSelected = selectedCategory === category.name;
-        const isEmpty = category.repos.length === 0;
-
-        return (
-          <button
-            key={category.name}
-            onClick={() => onCategorySelect(category.name)}
-            className={`cursor-pointer rounded-lg border p-3 text-left transition-all ${
-              isSelected
-                ? "border-primary bg-primary/10 text-foreground"
-                : isEmpty
-                  ? "border-border/30 bg-muted/20 text-muted-foreground hover:border-border/50"
-                  : "border-border/50 bg-background hover:border-primary/50 hover:bg-muted/30"
-            }`}
-          >
-            <div className="text-sm leading-tight font-medium">{category.name}</div>
-            <div
-              className={`mt-1 text-xs ${isSelected ? "text-primary" : "text-muted-foreground"}`}
-            >
-              {category.repos.length} {category.repos.length === 1 ? "repo" : "repos"}
-            </div>
-          </button>
-        );
-      })}
+      {categories.map((category) => (
+        <DroppableCategoryTile
+          key={category.name}
+          category={category}
+          isSelected={selectedCategory === category.name}
+          onSelect={() => onCategorySelect(category.name)}
+        />
+      ))}
     </div>
   );
 }

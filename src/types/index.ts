@@ -40,3 +40,5 @@ export interface FetchResult {
 }
 
 export type FetchStatus = "idle" | "fetching" | "success" | "error";
+
+export type CategoryOverrides = Record<string, string>;

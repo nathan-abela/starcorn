@@ -2,8 +2,15 @@
 
 import { useCallback, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import type { FetchProgress, FetchStatus, GitHubRepo, RateLimitInfo } from "@/types";
-import { Download, Lock, Star, Zap } from "lucide-react";
+import type {
+  CategoryOverrides,
+  FetchProgress,
+  FetchStatus,
+  GitHubRepo,
+  RateLimitInfo,
+} from "@/types";
+import { Download, Lock, RotateCcw, Star, Zap } from "lucide-react";
+import { toast } from "sonner";
 
 import { trackStarsFetched } from "@/lib/analytics";
 import {
@@ -16,7 +23,8 @@ import {
 import { fetchStarredRepos } from "@/lib/github";
 import { Button } from "@/components/ui/button";
 import { CategoryGrid } from "@/components/category-grid";
-import { CategorySection } from "@/components/category-section";
+import { RepoDndProvider } from "@/components/dnd-provider";
+import { DroppableCategory } from "@/components/droppable-category";
 import { EmptyState } from "@/components/empty-state";
 import { ErrorState } from "@/components/error-state";
 import { ExportModal } from "@/components/export-modal";
@@ -43,9 +51,15 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState<SortOption>("stars-desc");
   const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [categoryOverrides, setCategoryOverrides] = useState<CategoryOverrides>({});
   const categorySectionRef = useRef<HTMLDivElement>(null);
 
-  const categories = useMemo(() => categorizeRepos(repos), [repos]);
+  const hasManualOverrides = Object.keys(categoryOverrides).length > 0;
+
+  const categories = useMemo(
+    () => categorizeRepos(repos, categoryOverrides),
+    [repos, categoryOverrides]
+  );
 
   const filteredCategories = useMemo((): Category[] => {
     return categories.map((cat) => ({
@@ -76,6 +90,47 @@ export default function Home() {
     }, 50);
   }, []);
 
+  const handleMoveRepo = useCallback(
+    (repoFullName: string, targetCategory: string) => {
+      const currentCategory = categories.find((cat) =>
+        cat.repos.some((r) => r.full_name === repoFullName)
+      )?.name;
+
+      if (currentCategory === targetCategory) return;
+
+      setCategoryOverrides((prev) => ({
+        ...prev,
+        [repoFullName]: targetCategory,
+      }));
+
+      const repoName = repoFullName.split("/")[1] || repoFullName;
+      toast(
+        <span>
+          Moved <span className="text-primary font-semibold">{repoName}</span> to{" "}
+          <span className="text-primary font-semibold">{targetCategory}</span>
+        </span>,
+        {
+          icon: "📦",
+          action: {
+            label: "Undo",
+            onClick: () => {
+              setCategoryOverrides((prev) => {
+                const updated = { ...prev };
+                delete updated[repoFullName];
+                return updated;
+              });
+            },
+          },
+        }
+      );
+    },
+    [categories]
+  );
+
+  const handleResetOrganization = useCallback(() => {
+    setCategoryOverrides({});
+  }, []);
+
   const handleFetch = useCallback(
     async (inputUsername: string) => {
       setUsername(inputUsername);
@@ -87,6 +142,7 @@ export default function Home() {
       setIsOrganization(false);
       setSelectedCategory(null);
       setSearchQuery("");
+      setCategoryOverrides({});
       setProgress({
         currentPage: 0,
         totalPages: 1,
@@ -220,16 +276,34 @@ export default function Home() {
                   <div className="text-muted-foreground text-sm">
                     {repos.length} {repos.length === 1 ? "repository" : "repositories"} across{" "}
                     {categories.filter((c) => c.repos.length > 0).length} categories
+                    {hasManualOverrides && (
+                      <span className="text-primary ml-2">
+                        ({Object.keys(categoryOverrides).length} manually organized)
+                      </span>
+                    )}
                   </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setExportModalOpen(true)}
-                    className="cursor-pointer"
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    Export
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    {hasManualOverrides && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleResetOrganization}
+                        className="text-muted-foreground hover:text-foreground cursor-pointer"
+                      >
+                        <RotateCcw className="mr-2 h-4 w-4" />
+                        Reset
+                      </Button>
+                    )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setExportModalOpen(true)}
+                      className="cursor-pointer"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Export
+                    </Button>
+                  </div>
                 </div>
 
                 <FilterControls
@@ -240,16 +314,18 @@ export default function Home() {
                 />
               </div>
 
-              <CategoryGrid
-                categories={filteredCategories}
-                selectedCategory={selectedCategory}
-                onCategorySelect={handleCategorySelect}
-                totalRepos={allReposFiltered.length}
-              />
+              <RepoDndProvider onMoveRepo={handleMoveRepo}>
+                <CategoryGrid
+                  categories={filteredCategories}
+                  selectedCategory={selectedCategory}
+                  onCategorySelect={handleCategorySelect}
+                  totalRepos={allReposFiltered.length}
+                />
 
-              {selectedCategoryData && (
-                <CategorySection ref={categorySectionRef} category={selectedCategoryData} />
-              )}
+                {selectedCategoryData && (
+                  <DroppableCategory ref={categorySectionRef} category={selectedCategoryData} />
+                )}
+              </RepoDndProvider>
 
               <ExportModal
                 open={exportModalOpen}

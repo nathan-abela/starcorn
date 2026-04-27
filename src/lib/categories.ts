@@ -26,7 +26,7 @@
  * // DevTools matches on topic (100), AI matches on keyword (50) -> DevTools wins
  */
 
-import type { GitHubRepo } from "@/types";
+import type { CategoryOverrides, GitHubRepo } from "@/types";
 
 /**
  * Defines matching rules for a category.
@@ -260,8 +260,11 @@ function categorizeRepo(repo: GitHubRepo): string {
  * Categorizes a list of repos into purpose-based categories.
  * Returns all categories sorted alphabetically,
  * with Uncategorized always last.
+ *
+ * @param repos - List of repos to categorize
+ * @param overrides - Manual category assignments (repo full_name -> category name)
  */
-export function categorizeRepos(repos: GitHubRepo[]): Category[] {
+export function categorizeRepos(repos: GitHubRepo[], overrides?: CategoryOverrides): Category[] {
   const categoryMap = new Map<string, GitHubRepo[]>();
 
   for (const categoryName of Object.keys(CATEGORY_DEFINITIONS)) {
@@ -269,7 +272,8 @@ export function categorizeRepos(repos: GitHubRepo[]): Category[] {
   }
 
   for (const repo of repos) {
-    const category = categorizeRepo(repo);
+    const manualCategory = overrides?.[repo.full_name];
+    const category = manualCategory && categoryMap.has(manualCategory) ? manualCategory : categorizeRepo(repo); // prettier-ignore
     const existing = categoryMap.get(category) || [];
     existing.push(repo);
     categoryMap.set(category, existing);

@@ -24,6 +24,9 @@
   },
   "homepage": "https://nathan-abela.github.io/starcorn",
   "dependencies": {
+    "@dnd-kit/core": "6.3.1",
+    "@dnd-kit/sortable": "10.0.0",
+    "@dnd-kit/utilities": "3.2.2",
     "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-dialog": "1.1.15",
     "@radix-ui/react-progress": "^1.1.8",
@@ -39,6 +42,7 @@
     "posthog-js": "1.333.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "sonner": "2.0.7",
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
