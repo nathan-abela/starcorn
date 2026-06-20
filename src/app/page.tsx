@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type {
   CategoryOverrides,
@@ -36,6 +36,14 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { TokenInput } from "@/components/token-input";
 import { UsernameInput } from "@/components/username-input";
 
+const SESSION_STORAGE_KEY = "starcorn:session";
+
+interface SessionData {
+  username: string;
+  repos: GitHubRepo[];
+  categoryOverrides: CategoryOverrides;
+}
+
 export default function Home() {
   const [status, setStatus] = useState<FetchStatus>("idle");
   const [repos, setRepos] = useState<GitHubRepo[]>([]);
@@ -52,7 +60,39 @@ export default function Home() {
   const [sortOption, setSortOption] = useState<SortOption>("stars-desc");
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [categoryOverrides, setCategoryOverrides] = useState<CategoryOverrides>({});
+  const [isHydrated, setIsHydrated] = useState(false);
   const categorySectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem(SESSION_STORAGE_KEY);
+      if (saved) {
+        const data: SessionData = JSON.parse(saved);
+        setUsername(data.username);
+        setRepos(data.repos);
+        setCategoryOverrides(data.categoryOverrides);
+        setStatus("success");
+        setTimeout(() => {
+          toast(
+            <span>
+              Restored <span className="text-primary font-semibold">{data.username}</span>&apos;s
+              stars
+            </span>,
+            { icon: "✨" }
+          );
+        }, 100);
+      }
+    } catch {
+      sessionStorage.removeItem(SESSION_STORAGE_KEY);
+    }
+    setIsHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isHydrated || repos.length === 0) return;
+    const data: SessionData = { username, repos, categoryOverrides };
+    sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(data));
+  }, [isHydrated, username, repos, categoryOverrides]);
 
   const hasManualOverrides = Object.keys(categoryOverrides).length > 0;
 
@@ -133,6 +173,7 @@ export default function Home() {
 
   const handleFetch = useCallback(
     async (inputUsername: string) => {
+      sessionStorage.removeItem(SESSION_STORAGE_KEY);
       setUsername(inputUsername);
       setStatus("fetching");
       setRepos([]);

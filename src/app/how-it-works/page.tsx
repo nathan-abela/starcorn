@@ -99,7 +99,11 @@ export default function HowItWorks() {
             <p>starcorn is designed with privacy as a core principle:</p>
             <ul className="text-muted-foreground list-inside list-disc space-y-2 text-sm">
               <li>No accounts or authentication required</li>
-              <li>No data stored between sessions (refresh = start over)</li>
+              <li>
+                Session-only storage. Your data persists if you refresh, but is cleared when you
+                close the tab. Only public data (repos, categories) is stored. Your token never
+                leaves memory
+              </li>
               <li>No analytics that track your GitHub activity</li>
               <li>
                 Open source. You can verify everything at{" "}
