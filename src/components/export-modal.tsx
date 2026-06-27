@@ -14,6 +14,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface ExportModalProps {
@@ -35,10 +42,29 @@ export function ExportModal({
 }: ExportModalProps) {
   const [format, setFormat] = useState<ExportFormat>("markdown");
   const [copied, setCopied] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>("__all__");
+
+  const categoriesWithRepos = useMemo(
+    () => categories.filter((c) => c.repos.length > 0),
+    [categories]
+  );
+
+  const filteredCategories = useMemo(() => {
+    if (selectedCategory === "__all__") return categories;
+    return categories.filter((c) => c.name === selectedCategory);
+  }, [categories, selectedCategory]);
+
+  const filteredRepoCount = useMemo(() => {
+    return filteredCategories.reduce((sum, c) => sum + c.repos.length, 0);
+  }, [filteredCategories]);
 
   const content = useMemo(() => {
-    return getExportContent(format, { username, categories, totalRepos });
-  }, [format, username, categories, totalRepos]);
+    return getExportContent(format, {
+      username,
+      categories: filteredCategories,
+      totalRepos: filteredRepoCount,
+    });
+  }, [format, username, filteredCategories, filteredRepoCount]);
 
   const preview = useMemo(() => {
     const lines = content.split("\n");
@@ -56,11 +82,15 @@ export function ExportModal({
 
   const handleDownload = useCallback(() => {
     const extension = getFileExtension(format);
-    const filename = `${username}-stars.${extension}`;
+    const categorySlug =
+      selectedCategory === "__all__"
+        ? ""
+        : `-${selectedCategory.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+    const filename = `${username}-stars${categorySlug}.${extension}`;
     downloadFile(content, filename);
     const formatKey = format === "markdown" ? "md" : format;
     trackExportClicked(formatKey as "md" | "json" | "csv");
-  }, [content, format, username]);
+  }, [content, format, username, selectedCategory]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -71,6 +101,23 @@ export function ExportModal({
             Download or copy your organized stars in your preferred format.
           </DialogDescription>
         </DialogHeader>
+
+        <div className="flex items-center gap-3">
+          <span className="text-muted-foreground text-sm">Category:</span>
+          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <SelectTrigger className="w-48">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__all__">All ({totalRepos})</SelectItem>
+              {categoriesWithRepos.map((cat) => (
+                <SelectItem key={cat.name} value={cat.name}>
+                  {cat.name} ({cat.repos.length})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
         <Tabs value={format} onValueChange={(v) => setFormat(v as ExportFormat)}>
           <TabsList className="grid w-full grid-cols-3">
