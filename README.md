@@ -28,10 +28,11 @@ Check out the live site at **[starcorn.dev](https://starcorn.dev)**
 
 ## Features
 
-- **Auto-categorization** - Stars sorted into 20 categories (AI, DevTools, UI Components, etc.)
+- **Auto-categorization** - Stars sorted into 20+ categories (AI, DevTools, UI Components, etc.)
+- **Drag & drop organization** - Move repos between categories to override auto-categorization
 - **Search & filter** - Find repos across all categories
 - **Export** - Download as Markdown, JSON, or CSV
-- **Privacy-first** - No OAuth, no data stored, runs entirely in your browser
+- **Privacy-first** - No OAuth, no backend servers, runs entirely in your browser
 
 ## How It Works
 
@@ -75,6 +76,7 @@ To get started locally, follow these steps:
 - [TypeScript](https://www.typescriptlang.org)
 - [Tailwind CSS](https://tailwindcss.com)
 - [shadcn/ui](https://ui.shadcn.com)
+- [dnd-kit](https://dndkit.com)
 
 ---
 
