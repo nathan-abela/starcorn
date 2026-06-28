@@ -20,6 +20,7 @@ import {
   type Category,
   type SortOption,
 } from "@/lib/categories";
+import { DEMO_REPOS, DEMO_USERNAME } from "@/lib/demo-data";
 import { fetchStarredRepos } from "@/lib/github";
 import { Button } from "@/components/ui/button";
 import { CategoryGrid } from "@/components/category-grid";
@@ -89,7 +90,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (!isHydrated || repos.length === 0) return;
+    if (!isHydrated || repos.length === 0 || username === DEMO_USERNAME) return;
     const data: SessionData = { username, repos, categoryOverrides };
     sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(data));
   }, [isHydrated, username, repos, categoryOverrides]);
@@ -227,6 +228,16 @@ export default function Home() {
     }
   };
 
+  const handleLoadDemo = useCallback(() => {
+    setUsername(DEMO_USERNAME);
+    setRepos(DEMO_REPOS);
+    setStatus("success");
+    setCategoryOverrides({});
+    setSelectedCategory(null);
+    setSearchQuery("");
+    toast("Loaded demo data", { icon: "🎮" });
+  }, []);
+
   return (
     <div className="relative min-h-screen overflow-x-hidden">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -262,7 +273,9 @@ export default function Home() {
           <UsernameInput
             onSubmit={handleFetch}
             isLoading={status === "fetching"}
-            fetchedUsername={status === "success" ? username : undefined}
+            fetchedUsername={
+              status === "success" && username !== DEMO_USERNAME ? username : undefined
+            }
           />
 
           <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
@@ -272,6 +285,17 @@ export default function Home() {
               required={requiresToken}
             />
             {rateLimit && <RateLimitIndicator rateLimit={rateLimit} />}
+            {status === "idle" && !rateLimit && (
+              <p className="text-muted-foreground text-sm">
+                or{" "}
+                <button
+                  onClick={handleLoadDemo}
+                  className="text-primary cursor-pointer underline-offset-4 hover:underline"
+                >
+                  try a demo
+                </button>
+              </p>
+            )}
           </div>
         </div>
 
@@ -314,11 +338,18 @@ export default function Home() {
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="text-muted-foreground text-sm">
-                    {repos.length} {repos.length === 1 ? "repository" : "repositories"} across{" "}
-                    {categories.filter((c) => c.repos.length > 0).length} categories
+                  <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                    <span>
+                      {repos.length} {repos.length === 1 ? "repository" : "repositories"} across{" "}
+                      {categories.filter((c) => c.repos.length > 0).length} categories
+                    </span>
+                    {username === DEMO_USERNAME && (
+                      <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-xs text-amber-400">
+                        Demo
+                      </span>
+                    )}
                     {hasManualOverrides && (
-                      <span className="text-primary ml-2">
+                      <span className="text-primary">
                         ({Object.keys(categoryOverrides).length} manually organized)
                       </span>
                     )}
