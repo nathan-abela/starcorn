@@ -44,7 +44,7 @@ export function RepoCard({ repo }: RepoCardProps) {
   const languageColor = repo.language ? languageColors[repo.language] || "#6e7681" : null;
 
   return (
-    <Card className="hover:border-muted-foreground/50 h-full overflow-hidden py-4 transition-all">
+    <Card className="hover:border-muted-foreground/50 h-full py-4 transition-all">
       <CardContent className="px-4">
         <button onClick={() => setIsExpanded(!isExpanded)} className="w-full text-left">
           <div className="flex items-start gap-3">
@@ -53,13 +53,13 @@ export function RepoCard({ repo }: RepoCardProps) {
               <AvatarFallback>{repo.owner.login.slice(0, 2).toUpperCase()}</AvatarFallback>
             </Avatar>
             <div className="min-w-0 flex-1">
-              <div className="flex items-center justify-between gap-2">
-                <h3 className="text-card-foreground truncate font-medium">{repo.full_name}</h3>
+              <div className="flex items-start justify-between gap-2">
+                <h3 className="text-card-foreground font-medium break-all">{repo.full_name}</h3>
                 <ChevronDown
                   className={`text-muted-foreground h-4 w-4 shrink-0 transition-transform ${isExpanded ? "rotate-180" : ""}`}
                 />
               </div>
-              <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">
+              <p className="text-muted-foreground mt-2 line-clamp-2 text-sm">
                 {repo.description || "No description"}
               </p>
             </div>

@@ -337,23 +337,23 @@ export default function Home() {
               )}
 
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="text-muted-foreground flex items-center gap-2 text-sm">
-                    <span>
-                      {repos.length} {repos.length === 1 ? "repository" : "repositories"} across{" "}
-                      {categories.filter((c) => c.repos.length > 0).length} categories
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                  <span className="text-muted-foreground text-sm">
+                    {repos.length} {repos.length === 1 ? "repository" : "repositories"} across{" "}
+                    {categories.filter((c) => c.repos.length > 0).length} categories
+                  </span>
+                  {username === DEMO_USERNAME && (
+                    <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-xs text-amber-400">
+                      Demo
                     </span>
-                    {username === DEMO_USERNAME && (
-                      <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-xs text-amber-400">
-                        Demo
-                      </span>
-                    )}
-                    {hasManualOverrides && (
+                  )}
+                  {hasManualOverrides && (
+                    <span className="text-muted-foreground text-sm">
                       <span className="text-primary">
                         ({Object.keys(categoryOverrides).length} manually organized)
                       </span>
-                    )}
-                  </div>
+                    </span>
+                  )}
                   <div className="flex items-center gap-2">
                     {hasManualOverrides && (
                       <Button
