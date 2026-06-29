@@ -354,7 +354,7 @@ export default function Home() {
                       </span>
                     </span>
                   )}
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 sm:ml-auto">
                     {hasManualOverrides && (
                       <Button
                         variant="ghost"
