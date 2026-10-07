@@ -63,6 +63,7 @@ export default function Home() {
   const [categoryOverrides, setCategoryOverrides] = useState<CategoryOverrides>({});
   const [isHydrated, setIsHydrated] = useState(false);
   const categorySectionRef = useRef<HTMLDivElement>(null);
+  const sessionPersistenceFailed = useRef(false);
 
   useEffect(() => {
     try {
@@ -90,9 +91,25 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (!isHydrated || repos.length === 0 || username === DEMO_USERNAME) return;
+    if (
+      !isHydrated ||
+      repos.length === 0 ||
+      username === DEMO_USERNAME ||
+      sessionPersistenceFailed.current
+    ) {
+      return;
+    }
     const data: SessionData = { username, repos, categoryOverrides };
-    sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(data));
+    try {
+      sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(data));
+    } catch (error) {
+      sessionPersistenceFailed.current = true;
+      const message =
+        error instanceof DOMException && error.name === "QuotaExceededError"
+          ? "Your stars are too large to save in this tab. They are still available, but won't be restored after reloading."
+          : "Your stars couldn't be saved in this tab. They are still available, but won't be restored after reloading.";
+      toast.error(message);
+    }
   }, [isHydrated, username, repos, categoryOverrides]);
 
   const hasManualOverrides = Object.keys(categoryOverrides).length > 0;
