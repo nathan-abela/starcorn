@@ -3,6 +3,25 @@ import type { FetchProgress, FetchResult, GitHubRepo, RateLimitInfo } from "@/ty
 const GITHUB_API_BASE = "https://api.github.com";
 const PER_PAGE = 30;
 
+function toPublicRepos(pageData: GitHubRepo[]): GitHubRepo[] {
+  return pageData
+    .filter((repo) => !repo.private)
+    .map((repo) => ({
+      id: repo.id,
+      name: repo.name,
+      full_name: repo.full_name,
+      description: repo.description,
+      html_url: repo.html_url,
+      stargazers_count: repo.stargazers_count,
+      language: repo.language,
+      topics: repo.topics ?? [],
+      owner: { login: repo.owner.login, avatar_url: repo.owner.avatar_url },
+      updated_at: repo.updated_at,
+      fork: repo.fork,
+      private: repo.private,
+    }));
+}
+
 function parseRateLimitHeaders(headers: Headers): RateLimitInfo | undefined {
   const remaining = headers.get("X-RateLimit-Remaining");
   const limit = headers.get("X-RateLimit-Limit");
@@ -130,7 +149,7 @@ export async function fetchStarredRepos(
     estimatedTotal = lastPage * PER_PAGE;
 
     const firstPageData: GitHubRepo[] = await firstResponse.json();
-    const publicRepos = firstPageData.filter((repo) => !repo.private);
+    const publicRepos = toPublicRepos(firstPageData);
     repos.push(...publicRepos);
 
     onProgress({
@@ -188,7 +207,7 @@ export async function fetchStarredRepos(
       }
 
       const pageData: GitHubRepo[] = await response.json();
-      const publicPageRepos = pageData.filter((repo) => !repo.private);
+      const publicPageRepos = toPublicRepos(pageData);
       repos.push(...publicPageRepos);
 
       onProgress({

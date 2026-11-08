@@ -92,7 +92,11 @@ export default function Home() {
   useEffect(() => {
     if (!isHydrated || repos.length === 0 || username === DEMO_USERNAME) return;
     const data: SessionData = { username, repos, categoryOverrides };
-    sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(data));
+    try {
+      sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(data));
+    } catch {
+      sessionStorage.removeItem(SESSION_STORAGE_KEY);
+    }
   }, [isHydrated, username, repos, categoryOverrides]);
 
   const hasManualOverrides = Object.keys(categoryOverrides).length > 0;
